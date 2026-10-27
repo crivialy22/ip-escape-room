@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="lv">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ip escape room</title>
+    <link rel="stylesheet" href="sakumlapa.css">
+</head>
+<body>
+<!-- sakumekrans -->
+<section id="sakt" class="screen active">
+<p id="congratulations" hidden>
+    Apsveicam! Tu veiksmīgi izbēgi no istabas!
+</p>
+    <h1>IP Escape Room</h1>
+
+    <button data-screen="leaderboard">Leaderboard</button>
+    <button data-screen="setup">Iesākt</button>
+</section>
+<!-- leaderboard ekrans-->
+<section id="leaderboard" class="screen">
+            <h2>labākie rezultāti</h2>
+            
+
+            <button data-screen="9kls">
+                <!-- id 9kls section vajag ar datiem-->
+                9.klase
+            </button>
+            <button data-screen="10kls">
+                10.klase
+            </button>
+            <button data-screen="11kls">
+                11.klase
+            </button>
+            <button data-screen="12kls">
+                12.klase
+            </button>
+            <button data-screen="sakt">
+                Atpakaļ
+            </button>
+</section>
+<!-- lietotajvarda ekrans-->
+<section id="setup" class="screen">
+
+    <h2>Ievadi lietotājvārdu</h2>
+
+    <input id="iesakt" placeholder="Ievadi lietotājvārdu">
+    <button id="turpinat-poga" data-screen="continue">Turpināt</button>
+    <!-- error zina ja neievada vardu-->
+    <p id="error" hidden>
+        ievadi lietotājvārdu!
+    </p>
+
+    <button data-screen="sakt">
+                Atpakaļ
+    </button>
+
+</section>
+<!-- grutibas limena ekrans-->
+<section id="continue" class="screen">
+    <h1>izvēlies grūtības līmeni</h1>
+            <button data-screen="game9" class="spele">
+                9.klase
+            </button>
+            <button class="spele unavailable">
+                10.klase
+            </button>
+            <button class="spele unavailable">
+                11.klase
+            </button>
+            <button class="spele unavailable">
+                12.klase
+            </button>
+<p id="unavailable-message" hidden>
+    Šis grūtības līmenis pašlaik nav pieejams!
+</p>
+            <button data-screen="setup">
+                Atpakaļ
+            </button>
+</section>
+<!-- speles ekrans-->
+            <section id="game9" class="screen spelekrans">
+                <div id="popup-overlay" hidden></div>
+                <!-- interaktivie popupi-->
+                 <div class="situacijas-pogas">
+                    <button data-popup="situacija" class="pogas">situacija</button>
+                    <button data-popup="MI-assistents" class="pogas">MI assistents</button>
+                    <button data-popup="likumi" class="pogas">likumi</button>
+                    <button data-popup="pieraksti" class="pogas">pieraksti</button>
+                </div>
+                <!-- popup clues un kods-->
+                  <button id="clue1-hitbox" data-popup="clue1" class="clues" aria-label="1. norāde"></button>
+                  <button id="clue2-hitbox" data-popup="clue2" class="clues" aria-label="2. norāde"></button>
+                  <button id="clue3-hitbox" data-popup="clue3" class="clues" aria-label="3. norāde"></button>
+                  <button id="code-hitbox"data-popup="code" class="code-button" aria-label="Ievadīt kodu"></button>
+            </section>
+<!-- Situācijas popup -->
+<section id="situacija" class="popup" hidden>
+    <h2 class="drag-handle">Situācija</h2>
+    <button class="aizvert-poga">×</button>
+    <p>
+        Izgudrotāja Elza ir izstrādājusi logu tīrīšanas robotu,
+        kas ar sensoru palīdzību pamana loga malas un novērš
+        robota nokrišanu. Lai izbēgtu no istabas, tev jāizpēta
+        dokumenti un jāatšifrē trīsciparu kods.
+    </p>
+</section>
+
+<!-- MI asistenta popup -->
+<section id="MI-assistents" class="popup" hidden>
+    
+
+
+    <button type="button" id="mi-nakamais-padoms">
+        Man vajag vēl vienu padomu
+    </button>
+</div>
+
+    <h2 class="drag-handle">MI asistents</h2>
+    <button class="aizvert-poga">×</button>
+    <p>Šeit atradīsies MI asistents.</p>
+
+    <div class="mi-chat">
+    <div class="mi-chat-ziņojumi" id="mi-ziņojumi" aria-live="polite">
+        <div class="mi-ziņa mi-ziņa-asistents">
+            Sveiks, detektīv! Es varu palīdzēt tev
+            izpētīt patentu un atrast pavedienus.
+            Es nedošu gatavas atbildes, bet palīdzēšu
+            tev pašam tās atklāt. Ar ko sākam?
+        </div>
+    </div>
+
+    <form id="mi-forma" class="mi-chat-forma">
+        <input
+            id="mi-jautajums"
+            type="text"
+            placeholder="Uzdod jautājumu..."
+            autocomplete="off"
+            aria-label="Jautājums asistentam"
+        >
+        <button type="submit">Sūtīt</button>
+    </form>
+</section>
+
+<!-- Likumu popup -->
+
+<section id="likumi" class="popup" hidden>
+    <h2 class="drag-handle">Likumi un avoti</h2>
+    <button class="aizvert-poga">×</button>
+
+    <div class="likumi-saturs">
+
+        <p class="likumi-apraksts">
+            Noderīga informācija, kas palīdzēs izprast
+            patentus un atrisināt izmeklēšanu.
+        </p>
+
+        <article class="likumu-ieraksts">
+            <h3>Kas ir patents?</h3>
+            <p>
+                Patents ir tiesiskās aizsardzības veids
+                izgudrojumam. Lai izgudrojumu varētu patentēt,
+                tam jāatbilst noteiktām prasībām.
+            </p>
+            <span class="likumu-avots">
+                Avots: Patentu likums
+            </span>
+        </article>
+
+        <article class="likumu-ieraksts">
+            <h3>Kā aizsargā izgudrojumu?</h3>
+            <p>
+                Patenta aizsardzība ir saistīta ar
+                izgudrojuma patenta pieteikumu un patenta
+                piešķiršanu. Ar ideju vien nepietiek —
+                svarīgi ir noskaidrot, kas tieši tiek aizsargāts.
+            </p>
+            <span class="likumu-avots">
+                Avots: Patentu likums
+            </span>
+        </article>
+
+        <article class="likumu-ieraksts">
+            <h3>Kur meklēt informāciju?</h3>
+            <p>
+                Patentu valde sniedz informāciju par
+                patentiem un to reģistrācijas procesu.
+                Patentu dokumenti un reģistra ieraksti
+                var palīdzēt pārbaudīt konkrēta izgudrojuma
+                informāciju.
+            </p>
+            <a
+                href="https://www.lrpv.gov.lv/"
+                target="_blank"
+                rel="noopener noreferrer"
+            >
+                Latvijas Patentu valde ↗
+            </a>
+        </article>
+
+        <article class="likumu-ieraksts">
+            <h3>Oficiālais tiesību akts</h3>
+            <p>
+                Patentu likumā noteikti patentu
+                tiesiskās aizsardzības pamatprincipi Latvijā.
+            </p>
+            <a
+                href="https://likumi.lv/ta/id/153574-patentu-likums"
+                target="_blank"
+                rel="noopener noreferrer"
+            >
+                Lasīt Patentu likumu ↗
+            </a>
+        </article>
+
+        <p class="likumi-piezime">
+            Šī informācija ir paredzēta mācību nolūkiem.
+            Ja nepieciešama precīza juridiska informācija,
+            iepazīsties ar oficiālajiem avotiem.
+        </p>
+
+    </div>
+</section>
+
+
+<!-- Pierakstu popup -->
+<section id="pieraksti" class="popup" hidden>
+    <h2 class="drag-handle">Mani pieraksti</h2>
+    <button class="aizvert-poga">×</button>
+    <textarea placeholder="Raksti savas piezīmes šeit..."></textarea>
+</section>
+
+
+
+<!-- clue1 popups -->
+ <section id="clue1" class="clues-popup" hidden>
+    <button class="aizvert-poga" aria-label="Aizvērt">&times;</button>
+
+    <h2>Izgudrojuma izstrādes gaita</h2>
+    <p>12. aprīlis — ieskicē izgudrojuma ideju.</p>
+    <p> 19. aprīlis — tiek izgatavots pirmais prototips.</p>
+    <p> 6. aprīlis — iesniegts patenta pieteikums.</p>
+ </section>
+<!-- clue2 popups -->
+ <section id="clue2" class="clues-popup" hidden>
+    <button class="aizvert-poga" aria-label="Aizvērt">&times;</button>
+
+       <h2>Patentu pieteikumu reģistrs</h2>
+    <p class="dokumenta-apraksts">
+        Izraksts no izgudrojumu reģistra
+    </p>
+
+    <table class="registra-tabula">
+        <thead>
+            <tr>
+                <th>Reģ. Nr.</th>
+                <th>Izgudrojums</th>
+                <th>Statuss</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            <tr>
+                <td>LV-431</td>
+                <td>Automātiska augu laistīšanas sistēma</td>
+                <td>Pieteikums izskatīšanā</td>
+            </tr>
+
+            <tr>
+                <td>LV-582</td>
+                <td>Energoefektīva lampu sistēma</td>
+                <td>Pieteikums noraidīts</td>
+            </tr>
+
+            <tr>
+                <td>LV-697</td>
+                <td>Logu tīrīšanas robots</td>
+                <td>Patents piešķirts</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <p class="dokumenta-apraksts">
+        Reģistra izraksts paredzēts informatīvai lietošanai.
+    </p>
+ </section>
+ 
+<!-- clue3 popups -->
+ <section id="clue3" class="clues-popup" hidden>
+    <button class="aizvert-poga" aria-label="Aizvērt">&times;</button>
+
+    <h2>Tehnisko pārbaužu arhīvs</h2>
+    <p>Ziņojums Nr. 1: Robots pārvietojas pa grīdu.</p>
+    <p>Ziņojums Nr. 2: Sensors nosaka loga malu un palīdz robotam laikus apstāties.</p>
+    <p>Ziņojums Nr. 3: Robotam ir dekoratīvs apgaismojums.</p>
+ </section>
+
+<!-- code popups-->
+  
+<section id="code" class="code-popup" hidden>
+    <button class="aizvert-poga" aria-label="Aizvērt">&times;</button>
+
+    <h2>Atšifrē kodu</h2>
+
+    <p>1. cipars — Kurā mēneša dienā Elza iesniedza patenta pieteikumu?</p>
+    <p>2. cipars — Atrodi reģistrācijas numuru, kuram norādīts statuss “Patents piešķirts”. Paņem šī numura pēdējo ciparu.</p>
+    <p>3. cipars — Kurā ziņojumā aprakstīta funkcija, kas palīdz robotam nenokrist no loga?</p>
+
+    <form id="code-form">
+        <input
+            id="code-input"
+            type="text"
+            inputmode="numeric"
+            maxlength="3"
+            placeholder="Ievadi 3 ciparus"
+            autocomplete="off"
+            required
+        >
+
+        <button type="submit">Pārbaudīt kodu</button>
+    </form>
+
+    <p id="code-message" role="status" aria-live="polite" hidden></p>
+</section>
+
+
+<script src="sakumlapa.js"></script>
+</body>
+</html>
