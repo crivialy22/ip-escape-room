@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ip escape room</title>
+    <title>Ctrl + C Ctrl + V</title>
     <link rel="stylesheet" href="sakumlapa.css">
 </head>
 <body>
@@ -12,32 +12,45 @@
 <p id="congratulations" hidden>
     Apsveicam! Tu veiksmīgi izbēgi no istabas!
 </p>
-    <h1>IP Escape Room</h1>
-
+    <h1 id="s1">Ctrl + C</h1>
+    <h1 id="s2">Ctrl + V</h1>
+    
+<!--<img src="logo.jpeg" alt="Logo"> -->
     <button data-screen="leaderboard">Leaderboard</button>
     <button data-screen="setup">Iesākt</button>
 </section>
 <!-- leaderboard ekrans-->
+<!-- leaderboard ekrans -->
 <section id="leaderboard" class="screen">
-            <h2>labākie rezultāti</h2>
-            
+    <h2>Labākie rezultāti</h2>
 
-            <button d>
-                <!-- id 9kls section vajag ar datiem-->
-                9.klase
-            </button>
-            <button >
-                10.klase
-            </button>
-            <button >
-                11.klase
-            </button>
-            <button >
-                12.klase
-            </button>
-            <button data-screen="sakt">
-                Atpakaļ
-            </button>
+    <div id="leaderboard-filters">
+        <button type="button" data-class-filter="all">
+            Visas klases
+        </button>
+        <button type="button" data-class-filter="9.klase">
+            9. klase
+        </button>
+        <button type="button" data-class-filter="10.klase">
+            10. klase
+        </button>
+        <button type="button" data-class-filter="11.klase">
+            11. klase
+        </button>
+        <button type="button" data-class-filter="12.klase">
+            12. klase
+        </button>
+    </div>
+
+    <p id="leaderboard-empty">
+        Pagaidām nav neviena rezultāta.
+    </p>
+
+    <ol id="leaderboard-results"></ol>
+
+    <button type="button" data-screen="sakt">
+        Atpakaļ
+    </button>
 </section>
 <!-- lietotajvarda ekrans-->
 <section id="setup" class="screen">
@@ -59,7 +72,7 @@
 <!-- grutibas limena ekrans-->
 <section id="continue" class="screen">
     <h1>izvēlies grūtības līmeni</h1>
-            <button data-screen="game9" class="spele">
+            <button data-screen="game9" data-class="9.klase" class="spele">
                 9.klase
             </button>
             <button class="spele unavailable">
@@ -71,6 +84,8 @@
             <button class="spele unavailable">
                 12.klase
             </button>
+
+    
 <p id="unavailable-message" hidden>
     Šis grūtības līmenis pašlaik nav pieejams!
 </p>
@@ -80,6 +95,9 @@
 </section>
 <!-- speles ekrans-->
             <section id="game9" class="screen spelekrans">
+                <div id="game-timer" role="timer" aria-live="off">
+                Atlikušais laiks: 20:00
+                </div>
                 <div id="popup-overlay" hidden></div>
                 <!-- interaktivie popupi-->
                  <div class="situacijas-pogas">
@@ -97,20 +115,32 @@
                   
 <!-- Actus dialoga interfeiss -->
                 <section id="actus-asistents" aria-label="Actus asistents">
+                   <button
+    type="button"
+    id="actus-minimize"
+    aria-label="Minimizēt Actus dialogu"
+    aria-expanded="true"
+>
+    −
+</button>
 
-    <div class="actus-dialogs">
+    
+<div class="actus-dialogs">
 
-        <div class="actus-portrets">
-            <img
-                id="actus-portrets-attels"
-                src="Actus-reading.jpeg"
-                alt="Actus"
-            >
-        </div>
+    <div class="actus-portrets">
+        <img
+            id="actus-portrets-attels"
+            src="Actus-reading.jpeg"
+            alt="Actus"
+        >
+    </div>
 
-        <div class="actus-dialoga-kaste">
-            <div class="actus-vards">ACTUS</div>
+    <div class="actus-dialoga-kaste">
+        
 
+        <div class="actus-vards">ACTUS</div>
+
+        <div id="actus-dialogue-content">
             <p id="mi-ziņojumi" aria-live="polite">
                 Sveiks, detektīv! Es varu palīdzēt tev
                 izpētīt patentu un atrast pavedienus.
@@ -118,13 +148,15 @@
                 tev pašam tās atklāt. Ar ko sākam?
             </p>
         </div>
-
     </div>
 
-<p class="actus-paskaidrojums">
-    Actus ir programmēts asistents, kas atbild,
-    balstoties uz atslēgvārdiem, nevis mākslīgais intelekts.
-</p>
+</div>
+
+<div id="actus-extra-content">
+    <p class="actus-paskaidrojums">
+        Actus ir programmēts asistents, kas atbild,
+        balstoties uz atslēgvārdiem, nevis mākslīgais intelekts.
+    </p>
 
     <form id="mi-forma" class="actus-jautajumu-kaste">
         <input
@@ -134,11 +166,9 @@
             autocomplete="off"
             aria-label="Jautājums Actus"
         >
-
         <button type="submit">Sūtīt</button>
-
-        
     </form>
+</div>
 
               </section>
 

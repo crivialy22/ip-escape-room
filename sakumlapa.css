@@ -266,18 +266,25 @@ body {
 }
 
 /* Main headings */
-#sakt h1,
+#sakt #s1,
+#sakt #s2,
 #setup h2,
 #continue h1 {
     font-family: Georgia, "Times New Roman", serif;
     font-weight: normal;
     letter-spacing: 2px;
     color: #e2c58e;
-    margin-bottom: 18px;
+    margin-bottom: 2px;
 }
 
 /* Main title */
-#sakt h1 {
+#sakt #s1{
+    font-size: clamp(36px, 6vw, 64px);
+    text-transform: uppercase;
+
+    padding-bottom: 5px;
+}
+#sakt #s2 {
     font-size: clamp(36px, 6vw, 64px);
     text-transform: uppercase;
     border-bottom: 1px solid #a88b5b;
@@ -809,4 +816,95 @@ body {
     font-size: 10px;
     line-height: 1.3;
     opacity: 0.8;
+}
+/* ===== COUNTDOWN TIMER ===== */
+
+#game-timer {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    z-index: 30;
+
+    padding: 10px 14px;
+    background: rgba(23, 19, 25, 0.92);
+    color: #e2c58e;
+    border: 1px solid #b69a68;
+    border-radius: 6px;
+
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: 18px;
+    font-variant-numeric: tabular-nums;
+}
+
+/* ===== LEADERBOARD RESULTS ===== */
+
+#leaderboard-filters {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 8px;
+    max-width: 650px;
+}
+
+#leaderboard-filters button {
+    width: auto;
+    padding: 9px 14px;
+    cursor: pointer;
+}
+
+#leaderboard-filters button.selected {
+    background: #a88b5b;
+    color: #211820;
+    border-color: #e2c58e;
+}
+
+#leaderboard-results {
+    width: min(550px, 90vw);
+    box-sizing: border-box;
+    padding: 0 0 0 42px;
+    text-align: left;
+    line-height: 1.8;
+    color: #f3ead7;
+}
+
+#leaderboard-empty {
+    color: #b8aa96;
+    font-family: Georgia, "Times New Roman", serif;
+}
+
+#leaderboard-results li {
+    padding: 5px 8px;
+    border-bottom: 1px solid rgba(168, 139, 91, 0.35);
+    overflow-wrap: anywhere;
+}
+
+/* ===== ACTUS MINIMIZED STATE ===== */
+
+#actus-asistents.minimized {
+    width: auto;
+    gap: 0;
+}
+
+/* Hide the dialogue and input, but keep the portrait visible */
+#actus-asistents.minimized .actus-dialoga-kaste,
+#actus-asistents.minimized #actus-extra-content {
+    display: none;
+}
+
+/* Keep the portrait visible at its existing size */
+#actus-asistents.minimized .actus-portrets {
+    width: 170px;
+    height: 170px;
+    flex-basis: 170px;
+}
+
+/* Position the + button beside the portrait */
+#actus-asistents.minimized #actus-minimize {
+    position: absolute;
+    top: 0;
+    left: 170px;
+    right: auto;
+    width: 35px;
+    height: 35px;
+    z-index: 801;
 }

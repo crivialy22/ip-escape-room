@@ -1,6 +1,176 @@
 const buttons = document.querySelectorAll("[data-screen]");
 const screens = document.querySelectorAll(".screen");
 
+/* ===== SPĒLES TAIMERIS UN LĪDERU TABULA ===== */
+
+const TIME_LIMIT = 20 * 60 * 1000; // 20 minūtes
+const SCORE_KEY = "ctrlCvLeaderboard";
+
+let gameStartTime = null;
+let timerInterval = null;
+let gameActive = false;
+let selectedClass = "9.klase";
+let leaderboardFilter = "all";
+
+const timerDisplay = document.getElementById("game-timer");
+const leaderboardResults =
+    document.getElementById("leaderboard-results");
+const leaderboardEmpty =
+    document.getElementById("leaderboard-empty");
+
+function formatTime(milliseconds) {
+    const totalSeconds = Math.floor(milliseconds / 1000);
+    const minutes = Math.floor(totalSeconds / 60);
+    const seconds = totalSeconds % 60;
+
+    return String(minutes).padStart(2, "0") + ":" +
+           String(seconds).padStart(2, "0");
+}
+
+function getScores() {
+    try {
+        const saved = JSON.parse(localStorage.getItem(SCORE_KEY));
+        return Array.isArray(saved) ? saved : [];
+    } catch {
+        return [];
+    }
+}
+
+function saveScore(username, playerClass, elapsedTime) {
+    const scores = getScores();
+
+    scores.push({
+        username: username,
+        playerClass: playerClass,
+        timeMs: elapsedTime,
+        date: new Date().toISOString()
+    });
+
+    scores.sort((a, b) => a.timeMs - b.timeMs);
+
+    localStorage.setItem(SCORE_KEY, JSON.stringify(scores));
+}
+
+function renderLeaderboard() {
+    if (!leaderboardResults) return;
+
+    const scores = getScores()
+        .filter(score =>
+            leaderboardFilter === "all" ||
+            score.playerClass === leaderboardFilter
+        )
+        .sort((a, b) => a.timeMs - b.timeMs);
+
+    leaderboardResults.replaceChildren();
+
+    leaderboardEmpty.hidden = scores.length > 0;
+
+    scores.forEach((score, index) => {
+        const item = document.createElement("li");
+
+        item.textContent =
+            score.username + " — " +
+            formatTime(score.timeMs) + " (" +
+            score.playerClass.replace(".klase", ". klase") + ")";
+
+        leaderboardResults.appendChild(item);
+    });
+}
+
+/* Class filter buttons */
+
+document.querySelectorAll("[data-class-filter]").forEach(button => {
+    button.addEventListener("click", () => {
+        leaderboardFilter = button.dataset.classFilter;
+
+        document.querySelectorAll("[data-class-filter]")
+            .forEach(filterButton => {
+                filterButton.classList.toggle(
+                    "selected",
+                    filterButton === button
+                );
+            });
+
+        renderLeaderboard();
+    });
+});
+
+function stopTimer() {
+    clearInterval(timerInterval);
+    timerInterval = null;
+    gameActive = false;
+}
+
+function startGameTimer() {
+    // Avoid starting a second timer for the same game.
+    if (gameActive) return;
+
+    clearInterval(timerInterval);
+
+    gameStartTime = Date.now();
+    gameActive = true;
+
+    congratulations.hidden = true;
+    codeMessage.hidden = true;
+    codeInput.value = "";
+
+    updateTimer();
+
+    if (gameActive) {
+        timerInterval = setInterval(updateTimer, 250);
+    }
+}
+
+function updateTimer() {
+    if (!gameActive) return;
+
+    const elapsed = Date.now() - gameStartTime;
+    const remaining = TIME_LIMIT - elapsed;
+
+    if (remaining <= 0) {
+        timerDisplay.textContent = "Atlikušais laiks: 00:00";
+        timeExpired();
+        return;
+    }
+
+    timerDisplay.textContent =
+        "Atlikušais laiks: " + formatTime(remaining);
+}
+
+function closeGamePopups() {
+    document.querySelectorAll(
+        ".popup, .clues-popup, .code-popup"
+    ).forEach(windowElement => {
+        windowElement.hidden = true;
+    });
+
+    overlay.hidden = true;
+}
+
+function returnToStart(message) {
+    closeGamePopups();
+
+    screens.forEach(screen => {
+        screen.classList.remove("active");
+    });
+
+    document.getElementById("sakt").classList.add("active");
+
+    congratulations.textContent = message;
+    congratulations.hidden = false;
+}
+
+function timeExpired() {
+    if (!gameActive) return;
+
+    stopTimer();
+
+    returnToStart(
+        "Laiks beidzies! Šoreiz istabu neizdevās pabeigt 20 minūtēs. " +
+        "Mēģini vēlreiz!"
+    );
+}
+
 buttons.forEach(button => {
     if (button.id === "turpinat-poga") return;
 
@@ -12,6 +182,14 @@ buttons.forEach(button => {
         });
 
         document.getElementById(targetId).classList.add("active");
+        if (targetId === "game9") {
+    selectedClass = button.dataset.class || "9.klase";
+    startGameTimer();
+}
+
+if (targetId === "leaderboard") {
+    renderLeaderboard();
+}
     });
 });
 const usernameInput = document.getElementById("iesakt");
@@ -146,6 +324,8 @@ unavailableButtons.forEach(button => {
 
 
 /* KODA PARBAUDE */
+/* ===== KODA PARBAUDE ===== */
+
 const codeForm = document.getElementById("code-form");
 const codeInput = document.getElementById("code-input");
 const codeMessage = document.getElementById("code-message");
@@ -154,31 +334,44 @@ const congratulations = document.getElementById("congratulations");
 codeForm.addEventListener("submit", event => {
     event.preventDefault();
 
+    // No results can be recorded after the game ends.
+    if (!gameActive) return;
+
+    // Check the real elapsed time, even if the timer display
+    // has not yet updated for this fraction of a second.
+    if (Date.now() - gameStartTime >= TIME_LIMIT) {
+        timeExpired();
+        return;
+    }
+
     const ievaditaisKods = codeInput.value.trim();
 
     if (ievaditaisKods === "672") {
-        // Aizver visus atvertos logus
-        document.querySelectorAll(
-            ".popup, .clues-popup, .code-popup"
-        ).forEach(windowElement => {
-            windowElement.hidden = true;
-        });
+        const elapsedTime = Date.now() - gameStartTime;
+        const username = usernameInput.value.trim();
 
-        // Noņem tumšo pārklājumu
-        overlay.hidden = true;
+        stopTimer();
 
-        // Paslēpj iepriekšējo kļūdas paziņojumu
-        codeMessage.hidden = true;
+        // Save only successful completions.
+        try {
+            saveScore(username, selectedClass, elapsedTime);
+        } catch (error) {
+            console.error("Neizdevās saglabāt rezultātu:", error);
+        }
 
-        // Atgriežas sākuma ekrānā
+        closeGamePopups();
+
+        congratulations.textContent =
+            "Apsveicam! Tu veiksmīgi izbēgi no istabas! " +
+            "Tavs laiks: " + formatTime(elapsedTime) + ".";
+
+        congratulations.hidden = false;
+
         screens.forEach(screen => {
             screen.classList.remove("active");
         });
 
         document.getElementById("sakt").classList.add("active");
-
-        // Parāda apsveikumu
-        congratulations.hidden = false;
 
     } else {
         codeMessage.textContent =
@@ -311,4 +504,24 @@ actusPozas.forEach(function (fails) {
 
 }
 
+const actusPanel = document.getElementById("actus-asistents");
+const actusMinimize = document.getElementById("actus-minimize");
+
+actusMinimize.addEventListener("click", () => {
+    const isMinimized = actusPanel.classList.toggle("minimized");
+
+    actusMinimize.textContent = isMinimized ? "+" : "−";
+
+    actusMinimize.setAttribute(
+        "aria-expanded",
+        String(!isMinimized)
+    );
+
+    actusMinimize.setAttribute(
+        "aria-label",
+        isMinimized
+            ? "Atvērt Actus dialogu"
+            : "Minimizēt Actus dialogu"
+    );
+});
 
