@@ -187,32 +187,39 @@ codeForm.addEventListener("submit", event => {
         codeMessage.hidden = false;
     }
 });
-// mi assistents
+
+/* ===== ACTUS ASISTENTS ===== */
 
 const miZinojumi = document.getElementById("mi-ziņojumi");
 const miForma = document.getElementById("mi-forma");
 const miJautajums = document.getElementById("mi-jautajums");
-const miNakamaisPadoms = document.getElementById("mi-nakamais-padoms");
 
-if (miZinojumi && miForma && miJautajums && miNakamaisPadoms) {
+const actusPortrets = document.getElementById("actus-portrets-attels");
 
-    let padomaLimenis = 0;
+if (miZinojumi && miForma && miJautajums && actusPortrets) {
 
-    function pievienotZinu(teksts, tips) {
-        const zinasBloks = document.createElement("div");
+    
+    let pozasIndekss = 0;
 
-        zinasBloks.classList.add("mi-ziņa");
-        zinasBloks.classList.add(
-            tips === "lietotajs"
-                ? "mi-ziņa-lietotajs"
-                : "mi-ziņa-asistents"
-        );
+    // Nomaini šos failu nosaukumus, ja tavi attēli sauksies citādi.
+    const actusPozas = [
+        "Actus-reading.jpeg",
+        "Actus-thinking.jpeg",
+        //"actus-surprised.jpeg"
+    ];
 
-        // textContent prevents user input from becoming HTML.
-        zinasBloks.textContent = teksts;
+actusPozas.forEach(function (fails) {
+    const attels = new Image();
+    attels.src = fails;
+});
 
-        miZinojumi.appendChild(zinasBloks);
-        miZinojumi.scrollTop = miZinojumi.scrollHeight;
+    function paraditZinu(teksts) {
+        // Iepriekšējā ziņa pazūd; redzama tikai jaunā.
+        miZinojumi.textContent = teksts;
+
+        // Pārslēdz Actus pozu.
+        pozasIndekss = (pozasIndekss + 1) % actusPozas.length;
+        actusPortrets.src = actusPozas[pozasIndekss];
     }
 
     function atbildet(ievade) {
@@ -294,28 +301,14 @@ if (miZinojumi && miForma && miJautajums && miNakamaisPadoms) {
 
         if (!teksts) return;
 
-        pievienotZinu(teksts, "lietotajs");
-        pievienotZinu(atbildet(teksts), "asistents");
+        const atbilde = atbildet(teksts);
+        paraditZinu(atbilde);
 
         miJautajums.value = "";
-        padomaLimenis = 0;
+      
+        miJautajums.focus();
     });
 
-    miNakamaisPadoms.addEventListener("click", function () {
-        padomaLimenis++;
-
-        const padomi = [
-            "Sāc ar patenta pieteikuma dokumentu. Kāda informācija tajā ir norādīta?",
-            "Tagad apskati reģistra ierakstu. Kāds skaitlis vai informācija tajā ir svarīga?",
-            "Visbeidzot izlasi ziņojumu par sensoriem. Atrodi aprakstīto funkciju un salīdzini to ar uzdevuma prasībām."
-        ];
-
-        const indekss = Math.min(
-            padomaLimenis - 1,
-            padomi.length - 1
-        );
-
-        pievienotZinu(padomi[indekss], "asistents");
-    });
 }
+
 
